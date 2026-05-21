@@ -3,32 +3,32 @@ pipeline {
 
     stages {
         stage('Code Checkout') {
-            echo 'Pulling the latest codebase from version control...'
+            steps {
+                echo 'Pulling the latest codebase from version control...'
+            }
         }
-    }
 
-    stage('Docker Image Build') {
-        steps {
-            echo 'Compiling Dockerfile blueprint into a fresh app container...'
-            bat 'docker build -t devops-shop-app .'
+        stage('Docker Image Build') {
+            steps {
+                echo 'Compiling Dockerfile blueprint into a fresh app container...'
+                bat 'docker build -t devops-shop-app .'
+            }
         }
-    }
 
-    stage('Container Deployment') {
-        steps {
-            echo 'Cleaning up old instances and launching the new application container...'
-            // Clear any running container instance sharing port 4000
-            bat 'docker rm -f running-shop-container 2>nul || exit 0'
-            bat 'docker run -d -p 4000:4000 --name running-shop-container devops-shop-app'
-            echo 'Waiting for application initialization...'
-            bat 'timeout /t 5 /nobreak >nul'
+        stage('Container Deployment') {
+            steps {
+                echo 'Cleaning up old instances and launching the new application container...'
+                bat 'docker rm -f running-shop-container 2>nul || exit 0'
+                bat 'docker run -d -p 4000:4000 --name running-shop-container devops-shop-app'
+                echo 'Waiting for application initialization...'
+                bat 'timeout /t 5 /nobreak >nul'
+            }
         }
-    }
 
-    stage('Selenium Verification') {
-        steps {
-            echo 'Executing headless Selenium verification tests against port 4000...'
-            bat 'python test.py'
+        stage('Selenium Verification') {
+            steps {
+                echo 'Executing headless Selenium verification tests against port 4000...'
+                bat 'python test.py'
             }
         }
     }

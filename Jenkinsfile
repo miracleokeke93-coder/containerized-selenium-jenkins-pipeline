@@ -29,6 +29,11 @@ pipeline {
 
         stage('Selenium Verification') {
             steps {
+                echo 'Installing required Python testing packages inside Jenkins context...'
+
+                // This ensures the SYSTEM account has Selenium installed
+                bat 'python -m pip install selenium'
+
                 echo 'Executing headless Selenium verification tests against port 4000...'
                 bat 'python test.py'
             }

@@ -21,7 +21,9 @@ pipeline {
                 bat 'docker rm -f running-shop-container 2>nul || exit 0'
                 bat 'docker run -d -p 4000:4000 --name running-shop-container devops-shop-app'
                 echo 'Waiting for application initialization...'
-                bat 'timeout /t 5 /nobreak >nul'
+
+                //This replaces the broken Windows timeout command cleanly
+                sleep time: 5, unit: 'SECONDS'
             }
         }
 
